@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/SeansC12/marvote/pkg/service"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type CharacterRoutes struct {
@@ -22,7 +22,7 @@ func (cr *CharacterRoutes) GetAllCharacters(c echo.Context) error {
 
 	characters, err := cr.characterService.GetAll()
 	if err != nil {
-		return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials")
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 	return c.JSON(http.StatusOK, characters)
 }
@@ -32,13 +32,13 @@ func (cr *CharacterRoutes) Get(c echo.Context) error {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid Id passed")
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	characters, err := cr.characterService.Get(id)
 
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid character request")
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	return c.JSON(http.StatusOK, characters)

@@ -7,7 +7,8 @@ import (
 	"testing"
 
 	"github.com/SeansC12/marvote/pkg/model"
-	"github.com/labstack/echo"
+	"github.com/SeansC12/marvote/pkg/service"
+	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -41,6 +42,57 @@ func (ts *CharacterRouteTestSuite) TestGetOneCharacterRoute() {
 	}
 
 }
+
+func (ts *CharacterRouteTestSuite) TestFailToGetOneCharacterRoute() {
+
+	mockService := new(MockedCharacterService)
+	reqErr := &service.ErrorFailedToLoadData{}
+	mockService.On("Get", 0).Return(model.CharacterInfo{}, reqErr)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/character/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("0")
+
+	h := NewCharacterRoutes(mockService)
+	err := h.Get(c)
+	if assert.NotNil(ts.T(), err) {
+		he, ok := err.(*echo.HTTPError)
+		if ok {
+			assert.Equal(ts.T(), http.StatusBadRequest, he.Code)
+		}
+
+	}
+
+}
+
+func (ts *CharacterRouteTestSuite) TestInvalidId() {
+
+	mockService := new(MockedCharacterService)
+	reqErr := &service.ErrorFailedToLoadData{}
+	mockService.On("Get", 0).Return(model.CharacterInfo{}, reqErr)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/character/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("A")
+
+	h := NewCharacterRoutes(mockService)
+	err := h.Get(c)
+	if assert.NotNil(ts.T(), err) {
+		he, ok := err.(*echo.HTTPError)
+		if ok {
+			assert.Equal(ts.T(), http.StatusBadRequest, he.Code)
+		}
+	}
+
+}
 func (ts *CharacterRouteTestSuite) TestGetAllCharacterRoute() {
 	marvelCharJSON := `[{"id":0,"name":"Spiderman","aka":"Peter Parker"}]`
 	ci := model.CharacterInfo{
@@ -66,6 +118,30 @@ func (ts *CharacterRouteTestSuite) TestGetAllCharacterRoute() {
 	}
 
 }
+
+func (ts *CharacterRouteTestSuite) TestFailedGetAllCharacterRoute() {
+	all := make([]model.CharacterInfo, 0)
+	reqErr := &service.ErrorFailedToLoadData{}
+	mockService := new(MockedCharacterService)
+	mockService.On("GetAll").Return(all, reqErr)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/characters")
+
+	h := NewCharacterRoutes(mockService)
+	err := h.GetAllCharacters(c)
+	if assert.NotNil(ts.T(), err) {
+		he, ok := err.(*echo.HTTPError)
+		if ok {
+			assert.Equal(ts.T(), http.StatusBadRequest, he.Code)
+		}
+	}
+
+}
+
 func TestCharacterRoutes(t *testing.T) {
 	suite.Run(t, new(CharacterRouteTestSuite))
 }

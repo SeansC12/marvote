@@ -5,10 +5,13 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/SeansC12/marvote/pkg/api/v1/character"
 	"github.com/SeansC12/marvote/pkg/repository"
 	"github.com/SeansC12/marvote/pkg/service"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/cobra"
 )
 
@@ -35,13 +38,25 @@ func init() {
 }
 
 func setupRoutes(cmd *cobra.Command, args []string) {
-	e := echo.New()
 	characterRepository := repository.NewCharacterRepository()
 
 	characterService := service.NewCharacterService(characterRepository)
 	characterRoutes := character.NewCharacterRoutes(characterService)
+	e := echo.New()
+
 	e.GET("/api/v1/characters/all", characterRoutes.GetAllCharacters)
 	e.GET("/api/v1/character/:id", characterRoutes.Get)
+	e.Use(
+		middleware.Logger(),
+		middleware.Recover(),
+	)
+	e.HTTPErrorHandler = func(err error, c echo.Context) {
+		// Take required information from error and context and send it to a service like New Relic
+		fmt.Println(c.Path(), c.QueryParams(), err.Error())
+
+		// Call the default handler to return the HTTP response
+		e.DefaultHTTPErrorHandler(err, c)
+	}
 	e.Logger.Fatal(e.Start(":1323"))
 }
 

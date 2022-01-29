@@ -2,6 +2,20 @@
 
 This is a backend service providing endpoints to serve the Frontend module of Marvote.
 
+## Build and Test
+
+To build it in linux
+
+```shell
+
+go build .
+
+```
+
+To run test
+
+```
+
 ## List of endpoints
 
 Character endpoints

@@ -3,7 +3,6 @@ module github.com/SeansC12/marvote
 go 1.17
 
 require (
-	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo/v4 v4.6.3
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1

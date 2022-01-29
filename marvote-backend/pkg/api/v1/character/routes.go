@@ -24,7 +24,7 @@ func (cr *CharacterRoutes) GetAllCharacters(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials")
 	}
-	return c.JSON(http.StatusFound, characters)
+	return c.JSON(http.StatusOK, characters)
 }
 
 func (cr *CharacterRoutes) Get(c echo.Context) error {
@@ -41,5 +41,5 @@ func (cr *CharacterRoutes) Get(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid character request")
 	}
 
-	return c.JSON(http.StatusFound, characters)
+	return c.JSON(http.StatusOK, characters)
 }

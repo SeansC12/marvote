@@ -15,6 +15,9 @@ go build .
 To run test
 
 ```
+go test -v -p=1 -coverpkg=./... -coverprofile=coverage.txt  ./pkg/...
+go tool cover -html=coverage.txt
+```
 
 ## List of endpoints
 
@@ -22,6 +25,6 @@ Character endpoints
 
 | HTTP Action | Endpoint    | Description|
 |-------------|-------------|------------|
-| `GET`       | `/api/v1/characters/all` | Retrieves all Marvel characters available in the database
-| `GET`       | `/api/v1/character/:id` | Retrieve one Marvel character given the `id` associated to it.
-| `POST`      | `/api/v1/character/` | Add a new Marvel character into the database
+| `GET`       | `/api/v1/characters/all` | Retrieves all Marvel characters available in the database |
+| `GET`       | `/api/v1/character/:id` | Retrieve one Marvel character given the `id` associated to it. |
+| `POST`      | `/api/v1/character/` | Add a new Marvel character into the database |

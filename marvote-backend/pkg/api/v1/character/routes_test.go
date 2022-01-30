@@ -142,6 +142,35 @@ func (ts *CharacterRouteTestSuite) TestFailedGetAllCharacterRoute() {
 
 }
 
+func (ts *CharacterRouteTestSuite) TestSuccessfulSave() {
+	marvelCharJSON := `{"name":"Wolverine","aka":"Logan"}`
+	ci := model.CharacterInfo{
+		Name: "Wolverine",
+		Aka:  "Logan",
+	}
+
+	responseCi := model.CharacterInfo{
+		Id:   3,
+		Name: "Wolverine",
+		Aka:  "Logan",
+	}
+	mockService := new(MockedCharacterService)
+	mockService.On("Save", ci).Return(responseCi, nil)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/", strings.NewReader(marvelCharJSON))
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/character")
+
+	h := NewCharacterRoutes(mockService)
+	if assert.NoError(ts.T(), h.Save(c)) {
+		assert.Equal(ts.T(), http.StatusOK, rec.Code)
+	}
+
+}
+
 func TestCharacterRoutes(t *testing.T) {
 	suite.Run(t, new(CharacterRouteTestSuite))
 }

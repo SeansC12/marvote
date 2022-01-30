@@ -45,6 +45,21 @@ func (ts *CharacterServiceTestSuite) TestGetOneCharactersSuccess() {
 	assert.Equal(ts.T(), 0, response.Id, "Must have the same id")
 }
 
+func (ts *CharacterServiceTestSuite) TestMustSaveCharacters() {
+	mockCharacterRepo := new(MockedCharacterRepository)
+	service := NewCharacterService(mockCharacterRepo)
+
+	charInfo := model.CharacterInfo{
+		Name: "Daredevil",
+		Aka:  "Matt Murdock",
+	}
+	response, err := service.Save(charInfo)
+	assert.Nil(ts.T(), err)
+
+	assert.Equal(ts.T(), "Daredevil", response.Name, "Must be of the same name")
+	assert.NotEqual(ts.T(), 0, response.Id, "Must not have the same id")
+}
+
 func TestExampleTestSuite(t *testing.T) {
 	suite.Run(t, new(CharacterServiceTestSuite))
 }

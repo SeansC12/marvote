@@ -1,6 +1,8 @@
 package service
 
 import (
+	"math/rand"
+
 	"github.com/SeansC12/marvote/pkg/model"
 	"github.com/SeansC12/marvote/pkg/repository"
 )
@@ -29,4 +31,9 @@ func (cs *CharacterService) Get(characterId int) (model.CharacterInfo, error) {
 		return model.CharacterInfo{}, err
 	}
 	return marvelCharacter, nil
+}
+
+func (cs *CharacterService) Save(charInfo model.CharacterInfo) (model.CharacterInfo, error) {
+	charInfo.Id = rand.Intn(100)
+	return charInfo, nil
 }

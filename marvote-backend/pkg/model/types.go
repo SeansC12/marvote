@@ -1,7 +1,7 @@
 package model
 
 type CharacterInfo struct {
-	Id   int    `json:"id"`
+	Id   string `bson:"_id,omitempty" json:"id,omitempty"`
 	Name string `json:"name"`
 	Aka  string `json:"aka"`
 }

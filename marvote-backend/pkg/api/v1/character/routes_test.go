@@ -18,14 +18,14 @@ type CharacterRouteTestSuite struct {
 }
 
 func (ts *CharacterRouteTestSuite) TestGetOneCharacterRoute() {
-	marvelCharJSON := `{"id":0,"name":"Spiderman","aka":"Peter Parker"}`
+	marvelCharJSON := `{"id":"0","name":"Spiderman","aka":"Peter Parker"}`
 	ci := model.CharacterInfo{
-		Id:   0,
+		Id:   "0",
 		Name: "Spiderman",
 		Aka:  "Peter Parker",
 	}
 	mockService := new(MockedCharacterService)
-	mockService.On("Get", 0).Return(ci, nil)
+	mockService.On("Get", "0").Return(ci, nil)
 	// Setup
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/api/v1/", nil)
@@ -47,7 +47,7 @@ func (ts *CharacterRouteTestSuite) TestFailToGetOneCharacterRoute() {
 
 	mockService := new(MockedCharacterService)
 	reqErr := &service.ErrorFailedToLoadData{}
-	mockService.On("Get", 0).Return(model.CharacterInfo{}, reqErr)
+	mockService.On("Get", "0").Return(model.CharacterInfo{}, reqErr)
 	// Setup
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/api/v1/", nil)
@@ -73,7 +73,7 @@ func (ts *CharacterRouteTestSuite) TestInvalidId() {
 
 	mockService := new(MockedCharacterService)
 	reqErr := &service.ErrorFailedToLoadData{}
-	mockService.On("Get", 0).Return(model.CharacterInfo{}, reqErr)
+	mockService.On("Get", "A").Return(model.CharacterInfo{}, reqErr)
 	// Setup
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/api/v1/", nil)
@@ -94,9 +94,9 @@ func (ts *CharacterRouteTestSuite) TestInvalidId() {
 
 }
 func (ts *CharacterRouteTestSuite) TestGetAllCharacterRoute() {
-	marvelCharJSON := `[{"id":0,"name":"Spiderman","aka":"Peter Parker"}]`
+	marvelCharJSON := `[{"id":"0","name":"Spiderman","aka":"Peter Parker"}]`
 	ci := model.CharacterInfo{
-		Id:   0,
+		Id:   "0",
 		Name: "Spiderman",
 		Aka:  "Peter Parker",
 	}
@@ -150,7 +150,7 @@ func (ts *CharacterRouteTestSuite) TestSuccessfulSave() {
 	}
 
 	responseCi := model.CharacterInfo{
-		Id:   3,
+		Id:   "3",
 		Name: "Wolverine",
 		Aka:  "Logan",
 	}

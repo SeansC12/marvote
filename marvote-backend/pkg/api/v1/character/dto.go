@@ -1,7 +1,7 @@
 package character
 
 type CharacterInfoDto struct {
-	Id   int    `json:"id"`
+	Id   string `json:"id"`
 	Name string `json:"name"`
 	Aka  string `json:"aka"`
 }

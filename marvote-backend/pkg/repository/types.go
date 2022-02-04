@@ -1,8 +1,13 @@
 package repository
 
-import "github.com/SeansC12/marvote/pkg/model"
+import (
+	"context"
+
+	"github.com/SeansC12/marvote/pkg/model"
+)
 
 type ICharacterRepository interface {
-	FindAll() ([]model.CharacterInfo, error)
-	FindById(characterId int) (model.CharacterInfo, error)
+	FindAll(ctx context.Context) ([]model.CharacterInfo, error)
+	FindById(ctx context.Context, characterId string) (model.CharacterInfo, error)
+	Save(context.Context, model.CharacterInfo) (model.CharacterInfo, error)
 }

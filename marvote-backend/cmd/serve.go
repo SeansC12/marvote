@@ -5,9 +5,12 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"context"
 	"fmt"
+	"log"
 
 	"github.com/SeansC12/marvote/pkg/api/v1/character"
+	"github.com/SeansC12/marvote/pkg/infra"
 	"github.com/SeansC12/marvote/pkg/repository"
 	"github.com/SeansC12/marvote/pkg/service"
 	"github.com/labstack/echo/v4"
@@ -25,20 +28,16 @@ var serveCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// serveCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// serveCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func setupRoutes(cmd *cobra.Command, args []string) {
-	characterRepository := repository.NewCharacterRepository()
+	ctx := context.Background()
+	characterCollections, err := infra.GetCollection(ctx, "mongodb://adminuser:password123@localhost:31299")
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
+
+	characterRepository := repository.NewCharacterRepository(ctx, characterCollections)
 
 	characterService := service.NewCharacterService(characterRepository)
 	characterRoutes := character.NewCharacterRoutes(characterService)
@@ -46,7 +45,7 @@ func setupRoutes(cmd *cobra.Command, args []string) {
 
 	e.GET("/api/v1/characters/all", characterRoutes.GetAllCharacters)
 	e.GET("/api/v1/character/:id", characterRoutes.Get)
-	e.POST("/api/v1/character", characterRoutes.Save)
+	e.PUT("/api/v1/character", characterRoutes.Save)
 	e.Use(
 		middleware.Logger(),
 		middleware.Recover(),

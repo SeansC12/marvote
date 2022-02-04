@@ -2,7 +2,6 @@ package character
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/SeansC12/marvote/pkg/model"
 	"github.com/SeansC12/marvote/pkg/service"
@@ -21,8 +20,8 @@ func NewCharacterRoutes(characterService service.ICharacterService) *CharacterRo
 }
 
 func (cr *CharacterRoutes) GetAllCharacters(c echo.Context) error {
-
-	characters, err := cr.characterService.GetAll()
+	ctx := c.Request().Context()
+	characters, err := cr.characterService.GetAll(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
@@ -31,13 +30,8 @@ func (cr *CharacterRoutes) GetAllCharacters(c echo.Context) error {
 
 func (cr *CharacterRoutes) Get(c echo.Context) error {
 	idStr := c.Param("id")
-	id, err := strconv.Atoi(idStr)
-
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
-	}
-
-	characters, err := cr.characterService.Get(id)
+	ctx := c.Request().Context()
+	characters, err := cr.characterService.Get(ctx, idStr)
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
@@ -47,6 +41,7 @@ func (cr *CharacterRoutes) Get(c echo.Context) error {
 }
 
 func (cr *CharacterRoutes) Save(c echo.Context) (err error) {
+	ctx := c.Request().Context()
 	mc := new(CharacterInfoDto)
 	if err = c.Bind(mc); err != nil {
 		return
@@ -57,7 +52,7 @@ func (cr *CharacterRoutes) Save(c echo.Context) (err error) {
 		Name: mc.Name,
 		Aka:  mc.Aka,
 	}
-	x, err := cr.characterService.Save(charInfo)
+	x, err := cr.characterService.Save(ctx, charInfo)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}

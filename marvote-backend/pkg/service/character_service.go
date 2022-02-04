@@ -1,7 +1,7 @@
 package service
 
 import (
-	"math/rand"
+	"context"
 
 	"github.com/SeansC12/marvote/pkg/model"
 	"github.com/SeansC12/marvote/pkg/repository"
@@ -17,23 +17,26 @@ func NewCharacterService(characterRepository repository.ICharacterRepository) *C
 	}
 }
 
-func (cs *CharacterService) GetAll() ([]model.CharacterInfo, error) {
-	characters, err := cs.characterRepository.FindAll()
+func (cs *CharacterService) GetAll(ctx context.Context) ([]model.CharacterInfo, error) {
+	characters, err := cs.characterRepository.FindAll(ctx)
 	if err != nil {
 		return nil, err
 	}
 	return characters, nil
 }
 
-func (cs *CharacterService) Get(characterId int) (model.CharacterInfo, error) {
-	marvelCharacter, err := cs.characterRepository.FindById(characterId)
+func (cs *CharacterService) Get(ctx context.Context, characterId string) (model.CharacterInfo, error) {
+	marvelCharacter, err := cs.characterRepository.FindById(ctx, characterId)
 	if err != nil {
 		return model.CharacterInfo{}, err
 	}
 	return marvelCharacter, nil
 }
 
-func (cs *CharacterService) Save(charInfo model.CharacterInfo) (model.CharacterInfo, error) {
-	charInfo.Id = rand.Intn(100)
-	return charInfo, nil
+func (cs *CharacterService) Save(ctx context.Context, charInfo model.CharacterInfo) (model.CharacterInfo, error) {
+	result, err := cs.characterRepository.Save(ctx, charInfo)
+	if err != nil {
+		return model.CharacterInfo{}, err
+	}
+	return result, nil
 }

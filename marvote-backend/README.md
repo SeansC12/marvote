@@ -15,9 +15,15 @@ go build .
 To run test
 
 ```
-go test -v -p=1 -coverpkg=./... -coverprofile=coverage.txt  ./pkg/...
+go test -v -p=1 -coverpkg=./... -coverprofile=coverage.txt  ./...
 go tool cover -html=coverage.txt
 ```
+## TODO
+
+- [ ] Proper logging framework, using zap
+- [ ] `UPDATE` a record
+- [ ] allow voting a character
+- [ ] Tally the number of votes against the characters
 
 ## List of endpoints
 

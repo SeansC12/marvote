@@ -45,7 +45,7 @@ func setupRoutes(cmd *cobra.Command, args []string) {
 
 	e.GET("/api/v1/characters/all", characterRoutes.GetAllCharacters)
 	e.GET("/api/v1/character/:id", characterRoutes.Get)
-	e.PUT("/api/v1/character", characterRoutes.Save)
+	e.POST("/api/v1/character", characterRoutes.Save)
 	e.Use(
 		middleware.Logger(),
 		middleware.Recover(),

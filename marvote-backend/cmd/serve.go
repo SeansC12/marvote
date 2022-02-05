@@ -7,10 +7,10 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/SeansC12/marvote/pkg/api/v1/character"
 	"github.com/SeansC12/marvote/pkg/infra"
+	"github.com/SeansC12/marvote/pkg/logging"
 	"github.com/SeansC12/marvote/pkg/repository"
 	"github.com/SeansC12/marvote/pkg/service"
 	"github.com/labstack/echo/v4"
@@ -32,9 +32,14 @@ func init() {
 
 func setupRoutes(cmd *cobra.Command, args []string) {
 	ctx := context.Background()
-	characterCollections, err := infra.GetCollection(ctx, "mongodb://adminuser:password123@localhost:31299")
+	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%d", appConfig.MongoCfg.Username,
+		appConfig.MongoCfg.Password,
+		appConfig.MongoCfg.Host,
+		appConfig.MongoCfg.Port)
+
+	characterCollections, err := infra.GetCollection(ctx, mongoUri)
 	if err != nil {
-		log.Fatalf("%v", err)
+		logging.Fatalf("%v", err)
 	}
 
 	characterRepository := repository.NewCharacterRepository(ctx, characterCollections)
@@ -46,18 +51,17 @@ func setupRoutes(cmd *cobra.Command, args []string) {
 	e.GET("/api/v1/characters/all", characterRoutes.GetAllCharacters)
 	e.GET("/api/v1/character/:id", characterRoutes.Get)
 	e.POST("/api/v1/character", characterRoutes.Save)
+	e.DELETE("/api/v1/character/:id", characterRoutes.Delete)
 	e.Use(
 		middleware.Logger(),
 		middleware.Recover(),
 	)
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
-		// Take required information from error and context and send it to a service like New Relic
-		fmt.Println(c.Path(), c.QueryParams(), err.Error())
+		logging.Error(err.Error())
 
 		// Call the default handler to return the HTTP response
 		e.DefaultHTTPErrorHandler(err, c)
 	}
-	e.Logger.Fatal(e.Start(":1323"))
-}
 
-// Never gonna give you up, never gonna let you down, never gonna run around and desert you.
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", appConfig.ServerCfg.Port)))
+}

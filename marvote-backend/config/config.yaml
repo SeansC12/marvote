@@ -1,0 +1,8 @@
+mongo:
+  host: localhost
+  port: 31299
+  username: "adminuser"
+  password: "password123"
+
+server:
+  port: 1323

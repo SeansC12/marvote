@@ -171,6 +171,76 @@ func (ts *CharacterRouteTestSuite) TestSuccessfulSave() {
 
 }
 
+func (ts *CharacterRouteTestSuite) TestFailedSave() {
+	marvelCharJSON := `{"name":"Wolverine","aka":"Logan"}`
+	reqErr := &service.ErrorFailedToLoadData{}
+	ci := model.CharacterInfo{
+		Name: "Wolverine",
+		Aka:  "Logan",
+	}
+	mockService := new(MockedCharacterService)
+	mockService.On("Save", ci).Return(model.CharacterInfo{}, reqErr)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/", strings.NewReader(marvelCharJSON))
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/character")
+
+	h := NewCharacterRoutes(mockService)
+	err := h.Save(c)
+	if assert.NotNil(ts.T(), err) {
+		he, ok := err.(*echo.HTTPError)
+		if ok {
+			assert.Equal(ts.T(), http.StatusBadRequest, he.Code)
+		}
+	}
+}
+func (ts *CharacterRouteTestSuite) TestMustDeleteCharacter() {
+
+	mockService := new(MockedCharacterService)
+	mockService.On("Delete", "0").Return(int64(1), nil)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodDelete, "/api/v1/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/character/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("0")
+
+	h := NewCharacterRoutes(mockService)
+	if assert.NoError(ts.T(), h.Delete(c)) {
+		assert.Equal(ts.T(), http.StatusOK, rec.Code)
+	}
+
+}
+
+func (ts *CharacterRouteTestSuite) TestMustNotDeleteCharacter() {
+	reqErr := &service.ErrorFailedToLoadData{}
+	mockService := new(MockedCharacterService)
+	mockService.On("Delete", "0").Return(int64(0), reqErr)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodDelete, "/api/v1/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/character/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("0")
+
+	h := NewCharacterRoutes(mockService)
+	err := h.Delete(c)
+	if assert.NotNil(ts.T(), err) {
+		he, ok := err.(*echo.HTTPError)
+		if ok {
+			assert.Equal(ts.T(), http.StatusBadRequest, he.Code)
+		}
+	}
+
+}
+
 func TestCharacterRoutes(t *testing.T) {
 	suite.Run(t, new(CharacterRouteTestSuite))
 }

@@ -3,10 +3,10 @@ package character
 import (
 	"net/http"
 
+	"github.com/SeansC12/marvote/pkg/logging"
 	"github.com/SeansC12/marvote/pkg/model"
 	"github.com/SeansC12/marvote/pkg/service"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 )
 
 type CharacterRoutes struct {
@@ -21,6 +21,7 @@ func NewCharacterRoutes(characterService service.ICharacterService) *CharacterRo
 
 func (cr *CharacterRoutes) GetAllCharacters(c echo.Context) error {
 	ctx := c.Request().Context()
+	logging.Info("retrieving all characters...")
 	characters, err := cr.characterService.GetAll(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
@@ -31,6 +32,7 @@ func (cr *CharacterRoutes) GetAllCharacters(c echo.Context) error {
 func (cr *CharacterRoutes) Get(c echo.Context) error {
 	idStr := c.Param("id")
 	ctx := c.Request().Context()
+	logging.Infof("retrieving a characters %s...", idStr)
 	characters, err := cr.characterService.Get(ctx, idStr)
 
 	if err != nil {
@@ -56,7 +58,20 @@ func (cr *CharacterRoutes) Save(c echo.Context) (err error) {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
-	log.Debugf("Original Id %d", charInfo.Id)
-	log.Debugf("Returned Id: %d", x.Id)
+	logging.Debugf("Original Id %d", charInfo.Id)
+	logging.Debugf("Returned Id: %d", x.Id)
 	return c.JSON(http.StatusOK, x)
+}
+
+func (cr *CharacterRoutes) Delete(c echo.Context) error {
+	idStr := c.Param("id")
+	ctx := c.Request().Context()
+	logging.Infof("deleting a character %s...", idStr)
+	characters, err := cr.characterService.Delete(ctx, idStr)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	return c.JSON(http.StatusOK, characters)
 }

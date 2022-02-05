@@ -81,16 +81,12 @@ func (ts *CharacterRepositoryTestSuite) TestGetOneCharactersSuccess() {
 	defer mt.Close()
 	mt.Run("success", func(m *mtest.T) {
 		characterCollection = m.Coll
-		//initCollection(m, id1, m.Coll)
 		first := mtest.CreateCursorResponse(1, "marvel.marvel_characters", mtest.FirstBatch, bson.D{
 			{"_id", id1},
 			{"name", "Spiderman"},
 			{"aka", "Peter Parker"},
 		})
-		//killCursors := mtest.CreateCursorResponse(0, "marvel_characters", mtest.NextBatch)
 		m.AddMockResponses(first)
-
-		//users, err := find("john")
 
 		repo := NewCharacterRepository(ctx, characterCollection)
 		response, err := repo.FindById(ctx, id1.Hex())
@@ -99,6 +95,22 @@ func (ts *CharacterRepositoryTestSuite) TestGetOneCharactersSuccess() {
 	})
 }
 
+func (ts *CharacterRepositoryTestSuite) TestSuccessfulDeleteOneCharacter() {
+	var characterCollection *mongo.Collection
+	ctx := context.TODO()
+	mt := mtest.New(ts.T(), mtest.NewOptions().ClientType(mtest.Mock))
+	id1 := primitive.NewObjectID()
+	defer mt.Close()
+	mt.Run("success", func(m *mtest.T) {
+		characterCollection = m.Coll
+		m.AddMockResponses(bson.D{{"ok", 1}, {"acknowledged", true}, {"n", 1}})
+
+		repo := NewCharacterRepository(ctx, characterCollection)
+		response, err := repo.Delete(ctx, id1.Hex())
+		assert.Nil(ts.T(), err)
+		assert.Equal(ts.T(), int64(1), response, "Must have the same name")
+	})
+}
 func TestExampleTestSuite(t *testing.T) {
 	suite.Run(t, new(CharacterRepositoryTestSuite))
 }

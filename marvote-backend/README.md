@@ -18,12 +18,20 @@ To run test
 go test -v -p=1 -coverpkg=./... -coverprofile=coverage.txt  ./...
 go tool cover -html=coverage.txt
 ```
+
+Starting the application
+
+```shell
+./marvote serve --config config/config.yaml
+```
+
 ## TODO
 
-- [ ] Proper logging framework, using zap
-- [ ] `UPDATE` a record
-- [ ] allow voting a character
-- [ ] Tally the number of votes against the characters
+- [X] Proper logging framework, using zap
+- [ ] `UPDATE` a character
+- [X] `DELETE` a character
+- [ ] Vote a character
+- [ ] Tally the votes against the characters
 
 ## List of endpoints
 
@@ -34,3 +42,5 @@ Character endpoints
 | `GET`       | `/api/v1/characters/all` | Retrieves all Marvel characters available in the database |
 | `GET`       | `/api/v1/character/:id` | Retrieve one Marvel character given the `id` associated to it. |
 | `POST`      | `/api/v1/character/` | Add a new Marvel character into the database |
+| `PUT`       | `/api/v1/character/:id` | Update a character given the `id`|
+| `DELETE`    | `/api/v1/character/:id` | Delete a character given the `id`|

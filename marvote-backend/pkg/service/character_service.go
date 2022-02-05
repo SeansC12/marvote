@@ -40,3 +40,11 @@ func (cs *CharacterService) Save(ctx context.Context, charInfo model.CharacterIn
 	}
 	return result, nil
 }
+
+func (cs *CharacterService) Delete(ctx context.Context, characterId string) (int64, error) {
+	deleteCount, err := cs.characterRepository.Delete(ctx, characterId)
+	if err != nil {
+		return 0, err
+	}
+	return deleteCount, nil
+}

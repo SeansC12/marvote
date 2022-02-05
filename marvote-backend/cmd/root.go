@@ -25,11 +25,14 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/SeansC12/marvote/pkg/config"
+	"github.com/SeansC12/marvote/pkg/logging"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+var appConfig config.AppConfiguration
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -73,5 +76,10 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	}
+	appConfig = config.AppConfiguration{}
+
+	if err := viper.Unmarshal(&appConfig); err != nil {
+		logging.Fatalf("%v", err)
 	}
 }

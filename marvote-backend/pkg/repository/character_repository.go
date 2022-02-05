@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/SeansC12/marvote/pkg/logging"
 	"github.com/SeansC12/marvote/pkg/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -63,4 +64,20 @@ func (cs *CharacterRepository) Save(ctx context.Context, data model.CharacterInf
 
 	}
 	return model.CharacterInfo{}, nil
+}
+
+func (cs *CharacterRepository) Delete(ctx context.Context, characterId string) (int64, error) {
+
+	objectId, err := primitive.ObjectIDFromHex(characterId)
+	if err != nil {
+		return 0, err
+	}
+
+	filter := bson.M{"_id": objectId}
+	result, err := cs.characterCollections.DeleteOne(ctx, filter)
+	if err != nil {
+		logging.Errorf("%v", err)
+		return 0, err
+	}
+	return result.DeletedCount, nil
 }

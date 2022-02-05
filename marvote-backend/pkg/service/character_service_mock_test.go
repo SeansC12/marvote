@@ -25,3 +25,8 @@ func (m *MockedCharacterRepository) Save(ctx context.Context, character model.Ch
 	args := m.Called(character)
 	return args.Get(0).(model.CharacterInfo), args.Error(1)
 }
+
+func (m *MockedCharacterRepository) Delete(ctx context.Context, id string) (int64, error) {
+	args := m.Called(id)
+	return args.Get(0).(int64), args.Error(1)
+}

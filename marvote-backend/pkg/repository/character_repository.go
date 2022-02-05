@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type CharacterRepository struct {
@@ -80,4 +81,20 @@ func (cs *CharacterRepository) Delete(ctx context.Context, characterId string) (
 		return 0, err
 	}
 	return result.DeletedCount, nil
+}
+
+func (cs *CharacterRepository) CastVote(ctx context.Context, characterId string) error {
+	objectId, err := primitive.ObjectIDFromHex(characterId)
+	if err != nil {
+		return err
+	}
+	filter := bson.M{"_id": objectId}
+	_, err = cs.characterCollections.UpdateOne(ctx, filter, bson.D{
+		{"$inc", bson.D{{"votes", 1}}},
+	}, options.Update().SetUpsert(true))
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
 }

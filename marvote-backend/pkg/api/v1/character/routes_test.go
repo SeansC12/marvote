@@ -241,6 +241,50 @@ func (ts *CharacterRouteTestSuite) TestMustNotDeleteCharacter() {
 
 }
 
+func (ts *CharacterRouteTestSuite) TestMustAllowToCastVote() {
+
+	mockService := new(MockedCharacterService)
+	mockService.On("CastVote", "0").Return(nil)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPut, "/api/v1/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/character/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("0")
+
+	h := NewCharacterRoutes(mockService)
+	if assert.NoError(ts.T(), h.CastVote(c)) {
+		assert.Equal(ts.T(), http.StatusOK, rec.Code)
+	}
+
+}
+
+func (ts *CharacterRouteTestSuite) TestMustNotAllowToCastVote() {
+	reqErr := &service.ErrorFailedToLoadData{}
+	mockService := new(MockedCharacterService)
+	mockService.On("CastVote", "0").Return(reqErr)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodDelete, "/api/v1/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/character/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("0")
+
+	h := NewCharacterRoutes(mockService)
+	err := h.CastVote(c)
+	if assert.NotNil(ts.T(), err) {
+		he, ok := err.(*echo.HTTPError)
+		if ok {
+			assert.Equal(ts.T(), http.StatusBadRequest, he.Code)
+		}
+	}
+
+}
+
 func TestCharacterRoutes(t *testing.T) {
 	suite.Run(t, new(CharacterRouteTestSuite))
 }

@@ -1,6 +1,7 @@
 # Marvote API
 
-This is a backend service providing endpoints to serve the Frontend module of Marvote.
+This is a backend service providing endpoints to serve the Frontend module of Marvote.  MongoDB is used as the backend datastore of this API.
+
 
 ## Build and Test
 
@@ -30,8 +31,8 @@ Starting the application
 - [X] Proper logging framework, using zap
 - [ ] `UPDATE` a character
 - [X] `DELETE` a character
-- [ ] Vote a character
-- [ ] Tally the votes against the characters
+- [X] Vote a character
+- [X] Tally the votes against the characters, based on the get all endpoint
 
 ## List of endpoints
 

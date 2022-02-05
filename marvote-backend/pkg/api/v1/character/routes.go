@@ -44,7 +44,7 @@ func (cr *CharacterRoutes) Get(c echo.Context) error {
 
 func (cr *CharacterRoutes) Save(c echo.Context) (err error) {
 	ctx := c.Request().Context()
-	mc := new(CharacterInfoDto)
+	mc := new(model.CharacterInfo)
 	if err = c.Bind(mc); err != nil {
 		return
 	}
@@ -74,4 +74,17 @@ func (cr *CharacterRoutes) Delete(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, characters)
+}
+
+func (cr *CharacterRoutes) CastVote(c echo.Context) error {
+	idStr := c.Param("id")
+	ctx := c.Request().Context()
+	logging.Infof("deleting a character %s...", idStr)
+	err := cr.characterService.CastVote(ctx, idStr)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	return c.String(http.StatusOK, "Vote casted")
 }

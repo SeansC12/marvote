@@ -133,6 +133,25 @@ func (ts *CharacterServiceTestSuite) TestMustNotDeleteOneCharacter() {
 	assert.Equal(ts.T(), int64(0), response, "Must delete no record")
 }
 
+func (ts *CharacterServiceTestSuite) TestMustAllowToCastVote() {
+	ctx := context.TODO()
+	mockCharacterRepo := new(MockedCharacterRepository)
+	service := NewCharacterService(mockCharacterRepo)
+	mockCharacterRepo.On("CastVote", "0").Return(nil)
+	err := service.CastVote(ctx, "0")
+	assert.Nil(ts.T(), err)
+}
+
+func (ts *CharacterServiceTestSuite) TestMustNotAllowToCastVote() {
+	ctx := context.TODO()
+	reqErr := &ErrorFailedToLoadData{}
+	mockCharacterRepo := new(MockedCharacterRepository)
+	service := NewCharacterService(mockCharacterRepo)
+	mockCharacterRepo.On("CastVote", "0").Return(reqErr)
+	err := service.CastVote(ctx, "0")
+	assert.NotNil(ts.T(), err)
+}
+
 func TestExampleTestSuite(t *testing.T) {
 	suite.Run(t, new(CharacterServiceTestSuite))
 }

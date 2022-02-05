@@ -11,4 +11,5 @@ type ICharacterService interface {
 	Get(ctx context.Context, characterId string) (model.CharacterInfo, error)
 	Save(context.Context, model.CharacterInfo) (model.CharacterInfo, error)
 	Delete(ctx context.Context, characterId string) (int64, error)
+	CastVote(ctx context.Context, characterId string) error
 }

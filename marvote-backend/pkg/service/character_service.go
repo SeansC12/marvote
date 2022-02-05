@@ -48,3 +48,11 @@ func (cs *CharacterService) Delete(ctx context.Context, characterId string) (int
 	}
 	return deleteCount, nil
 }
+
+func (cs *CharacterService) CastVote(ctx context.Context, characterId string) error {
+	err := cs.characterRepository.CastVote(ctx, characterId)
+	if err != nil {
+		return err
+	}
+	return nil
+}

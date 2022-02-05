@@ -30,3 +30,8 @@ func (m *MockedCharacterService) Delete(ctx context.Context, id string) (int64, 
 	args := m.Called(id)
 	return args.Get(0).(int64), args.Error(1)
 }
+
+func (m *MockedCharacterService) CastVote(ctx context.Context, id string) error {
+	args := m.Called(id)
+	return args.Error(0)
+}

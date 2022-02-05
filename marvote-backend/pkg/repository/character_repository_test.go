@@ -73,7 +73,7 @@ func (ts *CharacterRepositoryTestSuite) TestFindAllCharactersSuccess() {
 	})
 }
 
-func (ts *CharacterRepositoryTestSuite) TestGetOneCharactersSuccess() {
+func (ts *CharacterRepositoryTestSuite) TestGetOneCharacterSuccess() {
 	var characterCollection *mongo.Collection
 	ctx := context.TODO()
 	mt := mtest.New(ts.T(), mtest.NewOptions().ClientType(mtest.Mock))
@@ -109,6 +109,22 @@ func (ts *CharacterRepositoryTestSuite) TestSuccessfulDeleteOneCharacter() {
 		response, err := repo.Delete(ctx, id1.Hex())
 		assert.Nil(ts.T(), err)
 		assert.Equal(ts.T(), int64(1), response, "Must have the same name")
+	})
+}
+
+func (ts *CharacterRepositoryTestSuite) TestSuccessfulCastVote() {
+	var characterCollection *mongo.Collection
+	ctx := context.TODO()
+	mt := mtest.New(ts.T(), mtest.NewOptions().ClientType(mtest.Mock))
+	id1 := primitive.NewObjectID()
+	defer mt.Close()
+	mt.Run("success", func(m *mtest.T) {
+		characterCollection = m.Coll
+		m.AddMockResponses(bson.D{{"ok", 1}, {"acknowledged", true}, {"n", 1}})
+
+		repo := NewCharacterRepository(ctx, characterCollection)
+		err := repo.CastVote(ctx, id1.Hex())
+		assert.Nil(ts.T(), err)
 	})
 }
 func TestExampleTestSuite(t *testing.T) {

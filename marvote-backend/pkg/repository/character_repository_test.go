@@ -95,6 +95,18 @@ func (ts *CharacterRepositoryTestSuite) TestGetOneCharacterSuccess() {
 	})
 }
 
+func (ts *CharacterRepositoryTestSuite) TestInvalidIdWhileGetOneCharacter() {
+	var characterCollection *mongo.Collection
+	ctx := context.TODO()
+	mt := mtest.New(ts.T(), mtest.NewOptions().ClientType(mtest.Mock))
+	defer mt.Close()
+	mt.Run("success", func(m *mtest.T) {
+		repo := NewCharacterRepository(ctx, characterCollection)
+		_, err := repo.FindById(ctx, "invalidId")
+		assert.NotNil(ts.T(), err)
+	})
+}
+
 func (ts *CharacterRepositoryTestSuite) TestSuccessfulDeleteOneCharacter() {
 	var characterCollection *mongo.Collection
 	ctx := context.TODO()
@@ -116,6 +128,18 @@ func (ts *CharacterRepositoryTestSuite) TestSuccessfulDeleteOneCharacter() {
 	})
 }
 
+func (ts *CharacterRepositoryTestSuite) TestInvalidIdWhileDeletingCharacter() {
+	var characterCollection *mongo.Collection
+	ctx := context.TODO()
+	mt := mtest.New(ts.T(), mtest.NewOptions().ClientType(mtest.Mock))
+	defer mt.Close()
+	mt.Run("success", func(m *mtest.T) {
+		repo := NewCharacterRepository(ctx, characterCollection)
+		_, err := repo.Delete(ctx, "invalidId")
+		assert.NotNil(ts.T(), err)
+	})
+}
+
 func (ts *CharacterRepositoryTestSuite) TestSuccessfulCastVote() {
 	var characterCollection *mongo.Collection
 	ctx := context.TODO()
@@ -133,6 +157,18 @@ func (ts *CharacterRepositoryTestSuite) TestSuccessfulCastVote() {
 		repo := NewCharacterRepository(ctx, characterCollection)
 		err := repo.CastVote(ctx, id1.Hex())
 		assert.Nil(ts.T(), err)
+	})
+}
+
+func (ts *CharacterRepositoryTestSuite) TestInvalidIdWhileCastingVote() {
+	var characterCollection *mongo.Collection
+	ctx := context.TODO()
+	mt := mtest.New(ts.T(), mtest.NewOptions().ClientType(mtest.Mock))
+	defer mt.Close()
+	mt.Run("success", func(m *mtest.T) {
+		repo := NewCharacterRepository(ctx, characterCollection)
+		err := repo.CastVote(ctx, "invalidId")
+		assert.NotNil(ts.T(), err)
 	})
 }
 func TestExampleTestSuite(t *testing.T) {

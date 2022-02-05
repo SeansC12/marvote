@@ -18,7 +18,7 @@ type CharacterRouteTestSuite struct {
 }
 
 func (ts *CharacterRouteTestSuite) TestGetOneCharacterRoute() {
-	marvelCharJSON := `{"id":"0","name":"Spiderman","aka":"Peter Parker"}`
+	marvelCharJSON := `{"id":"0","name":"Spiderman","aka":"Peter Parker","votes":0}`
 	ci := model.CharacterInfo{
 		Id:   "0",
 		Name: "Spiderman",
@@ -94,7 +94,7 @@ func (ts *CharacterRouteTestSuite) TestInvalidId() {
 
 }
 func (ts *CharacterRouteTestSuite) TestGetAllCharacterRoute() {
-	marvelCharJSON := `[{"id":"0","name":"Spiderman","aka":"Peter Parker"}]`
+	marvelCharJSON := `[{"id":"0","name":"Spiderman","aka":"Peter Parker","votes":0}]`
 	ci := model.CharacterInfo{
 		Id:   "0",
 		Name: "Spiderman",

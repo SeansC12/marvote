@@ -33,6 +33,7 @@ Starting the application
 - [X] `DELETE` a character
 - [X] Vote a character
 - [X] Tally the votes against the characters, based on the get all endpoint
+- [ ] Add failure test cases with character repository
 
 ## List of endpoints
 

@@ -51,14 +51,14 @@ func (ts *CharacterRepositoryTestSuite) TestFindAllCharactersSuccess() {
 		id2 := primitive.NewObjectID()
 
 		first := mtest.CreateCursorResponse(1, "marvel.marvel_characters", mtest.FirstBatch, bson.D{
-			{"_id", id1},
-			{"name", "Spiderman"},
-			{"aka", "Peter Parker"},
+			primitive.E{Key: "_id", Value: id1},
+			primitive.E{Key: "name", Value: "Spiderman"},
+			primitive.E{Key: "aka", Value: "Peter Parker"},
 		})
 		second := mtest.CreateCursorResponse(1, "marvel.marvel_characters", mtest.NextBatch, bson.D{
-			{"_id", id2},
-			{"name", "Wolverine"},
-			{"aka", "Logan"},
+			primitive.E{Key: "_id", Value: id2},
+			primitive.E{Key: "name", Value: "Wolverine"},
+			primitive.E{Key: "aka", Value: "Logan"},
 		})
 		endCursor := mtest.CreateCursorResponse(0, "marvel.marvel_characters", mtest.NextBatch)
 		m.AddMockResponses(first, second, endCursor)
@@ -82,9 +82,9 @@ func (ts *CharacterRepositoryTestSuite) TestGetOneCharacterSuccess() {
 	mt.Run("success", func(m *mtest.T) {
 		characterCollection = m.Coll
 		first := mtest.CreateCursorResponse(1, "marvel.marvel_characters", mtest.FirstBatch, bson.D{
-			{"_id", id1},
-			{"name", "Spiderman"},
-			{"aka", "Peter Parker"},
+			primitive.E{Key: "_id", Value: id1},
+			primitive.E{Key: "name", Value: "Spiderman"},
+			primitive.E{Key: "aka", Value: "Peter Parker"},
 		})
 		m.AddMockResponses(first)
 
@@ -103,7 +103,11 @@ func (ts *CharacterRepositoryTestSuite) TestSuccessfulDeleteOneCharacter() {
 	defer mt.Close()
 	mt.Run("success", func(m *mtest.T) {
 		characterCollection = m.Coll
-		m.AddMockResponses(bson.D{{"ok", 1}, {"acknowledged", true}, {"n", 1}})
+		m.AddMockResponses(bson.D{
+			primitive.E{Key: "ok", Value: 1},
+			primitive.E{Key: "acknowledged", Value: true},
+			primitive.E{Key: "n", Value: 1},
+		})
 
 		repo := NewCharacterRepository(ctx, characterCollection)
 		response, err := repo.Delete(ctx, id1.Hex())
@@ -120,7 +124,11 @@ func (ts *CharacterRepositoryTestSuite) TestSuccessfulCastVote() {
 	defer mt.Close()
 	mt.Run("success", func(m *mtest.T) {
 		characterCollection = m.Coll
-		m.AddMockResponses(bson.D{{"ok", 1}, {"acknowledged", true}, {"n", 1}})
+		m.AddMockResponses(bson.D{
+			primitive.E{Key: "ok", Value: 1},
+			primitive.E{Key: "acknowledged", Value: true},
+			primitive.E{Key: "n", Value: 1},
+		})
 
 		repo := NewCharacterRepository(ctx, characterCollection)
 		err := repo.CastVote(ctx, id1.Hex())

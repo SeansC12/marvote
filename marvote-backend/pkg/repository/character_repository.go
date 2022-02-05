@@ -90,7 +90,10 @@ func (cs *CharacterRepository) CastVote(ctx context.Context, characterId string)
 	}
 	filter := bson.M{"_id": objectId}
 	_, err = cs.characterCollections.UpdateOne(ctx, filter, bson.D{
-		{"$inc", bson.D{{"votes", 1}}},
+		primitive.E{Key: "$inc",
+			Value: bson.D{
+				primitive.E{Key: "votes", Value: 1},
+			}},
 	}, options.Update().SetUpsert(true))
 	if err != nil {
 		log.Println(err)

@@ -1,0 +1,5 @@
+.container {
+  display: grid;
+  grid-template-columns: [first] 15% [line2] auto [end];
+  grid-template-rows: [row1-start] 100px [row2-start] 100px [row3-start] 100px [row4-start] 100px [end];
+}

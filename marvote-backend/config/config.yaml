@@ -1,6 +1,5 @@
 mongo:
-  host: localhost
-  port: 31299
+  host: localhost:31299
   username: "adminuser"
   password: "password123"
 

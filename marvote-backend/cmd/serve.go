@@ -32,10 +32,10 @@ func init() {
 
 func setupRoutes(cmd *cobra.Command, args []string) {
 	ctx := context.Background()
-	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%d", appConfig.MongoCfg.Username,
+
+	mongoUri := fmt.Sprintf("mongodb+srv://%s:%s@%s", appConfig.MongoCfg.Username,
 		appConfig.MongoCfg.Password,
-		appConfig.MongoCfg.Host,
-		appConfig.MongoCfg.Port)
+		appConfig.MongoCfg.Host)
 
 	characterCollections, err := infra.GetCollection(ctx, mongoUri)
 	if err != nil {

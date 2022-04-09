@@ -15,20 +15,10 @@
     "static/development/_middlewareManifest.js"
   ],
   "pages": {
-    "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
-    ],
     "/Submit/submit_quote": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/Submit/submit_quote.js"
-    ],
-    "/Tally/tally": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/Tally/tally.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",
